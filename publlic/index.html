@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Semptify - Complaint Tracker</title>
+  <link rel="stylesheet" href="../styles/main.css">
+</head>
+<body>
+  <div class="container">
+    <h1>📋 Log a Complaint</h1>
+    <input type="text" id="name" placeholder="Your Name">
+    <select id="category">
+      <option value="harassment">Harassment</option>
+      <option value="retaliation">Retaliation</option>
+      <option value="maintenance">Neglect/Maintenance</option>
+    </select>
+    <textarea id="details" placeholder="Describe what happened..."></textarea>
+    <button onclick="saveComplaint()">Save Complaint</button>
+
+    <h2>🗂️ Saved Complaints</h2>
+    <ul id="complaintList"></ul>
+  </div>
+
+  <script>
+    function saveComplaint() {
+      const name = document.getElementById('name').value;
+      const category = document.getElementById('category').value;
+      const details = document.getElementById('details').value;
+      const entry = `${new Date().toLocaleString()} - ${name} - ${category}: ${details}`;
+      const li = document.createElement('li');
+      li.textContent = entry;
+      document.getElementById('complaintList').appendChild(li);
+    }
+  </script>
+</body>
+</html>
