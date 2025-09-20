@@ -1,5 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import VaultUpload from './components/VaultUpload';
+
+function Verifier() {
+  const [status, setStatus] = useState('Checking...');
+  useEffect(() => {
+    fetch('/verify')
+      .then(res => res.json())
+      .then(data => {
+        if (data.backend) {
+          setStatus(`✅ System OK — ${new Date(data.timestamp).toLocaleString()}`);
+        } else {
+          setStatus('❌ Backend unreachable');
+        }
+      })
+      .catch(() => setStatus('❌ Backend unreachable'));
+  }, []);
+  return <div style={{ padding: '1rem', fontSize: '0.9rem', color: '#555' }}>{status}</div>;
+}
 
 function Home() {
   const [message, setMessage] = useState('');
@@ -9,41 +27,19 @@ function Home() {
       .then(data => setMessage(data.welcome))
       .catch(() => setMessage('Failed to connect to backend'));
   }, []);
-  return (
-    <div style={{ padding: '2rem' }}>
-      <h2>Home</h2>
-      <p>{message}</p>
-    </div>
-  );
+  return <div style={{ padding: '2rem' }}><h2>Home</h2><p>{message}</p></div>;
 }
 
 function Rights() {
-  const [message, setMessage] = useState('');
-  const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    fetch('/rights')
-      .then(res => res.json())
-      .then(data => {
-        setMessage(data.message);
-        setLoading(false);
-      })
-      .catch(() => {
-        setMessage('Failed to connect to backend');
-        setLoading(false);
-      });
-  }, []);
   return (
     <div style={{ padding: '2rem' }}>
       <h2>Rights Navigator</h2>
-      {loading ? <p>Loading...</p> : <p>{message}</p>}
-      <div style={{ marginTop: '2rem' }}>
-        <ul>
-          <li>🏠 Lease & Rent</li>
-          <li>🚪 Eviction & Entry</li>
-          <li>🛠️ Repairs & Conditions</li>
-          <li>📞 Retaliation & Harassment</li>
-        </ul>
-      </div>
+      <ul>
+        <li><Link to="/rights/lease">🏠 Lease & Rent</Link></li>
+        <li><Link to="/rights/eviction">🚪 Eviction & Entry</Link></li>
+        <li><Link to="/rights/repairs">🛠️ Repairs & Conditions</Link></li>
+        <li><Link to="/rights/retaliation">📞 Retaliation & Harassment</Link></li>
+      </ul>
     </div>
   );
 }
@@ -56,12 +52,7 @@ function Vault() {
       .then(data => setFiles(data.files || []))
       .catch(() => setFiles([]));
   }, []);
-  return (
-    <div style={{ padding: '2rem' }}>
-      <h2>Vault</h2>
-      <p>Files: {files.length === 0 ? 'None' : files.join(', ')}</p>
-    </div>
-  );
+  return <div style={{ padding: '2rem' }}><h2>Vault</h2><p>Files: {files.length === 0 ? 'None' : files.join(', ')}</p></div>;
 }
 
 function Letters() {
@@ -76,27 +67,72 @@ function Letters() {
       .then(data => setResponse(data.message))
       .catch(() => setResponse('Failed to send letter'));
   };
-  return (
-    <div style={{ padding: '2rem' }}>
-      <h2>Letters</h2>
-      <button onClick={sendLetter}>Generate Letter</button>
-      <p>{response}</p>
-    </div>
-  );
+  return <div style={{ padding: '2rem' }}><h2>Letters</h2><button onClick={sendLetter}>Generate Letter</button><p>{response}</p></div>;
+}
+
+function Lease() {
+  const [message, setMessage] = useState('');
+  useEffect(() => {
+    fetch('/rights/lease')
+      .then(res => res.json())
+      .then(data => setMessage(data.message))
+      .catch(() => setMessage('Failed to connect to backend'));
+  }, []);
+  return <div style={{ padding: '2rem' }}><h2>Lease & Rent</h2><p>{message}</p></div>;
+}
+
+function Eviction() {
+  const [message, setMessage] = useState('');
+  useEffect(() => {
+    fetch('/rights/eviction')
+      .then(res => res.json())
+      .then(data => setMessage(data.message))
+      .catch(() => setMessage('Failed to connect to backend'));
+  }, []);
+  return <div style={{ padding: '2rem' }}><h2>Eviction & Entry</h2><p>{message}</p></div>;
+}
+
+function Repairs() {
+  const [message, setMessage] = useState('');
+  useEffect(() => {
+    fetch('/rights/repairs')
+      .then(res => res.json())
+      .then(data => setMessage(data.message))
+      .catch(() => setMessage('Failed to connect to backend'));
+  }, []);
+  return <div style={{ padding: '2rem' }}><h2>Repairs & Conditions</h2><p>{message}</p></div>;
+}
+
+function Retaliation() {
+  const [message, setMessage] = useState('');
+  useEffect(() => {
+    fetch('/rights/retaliation')
+      .then(res => res.json())
+      .then(data => setMessage(data.message))
+      .catch(() => setMessage('Failed to connect to backend'));
+  }, []);
+  return <div style={{ padding: '2rem' }}><h2>Retaliation & Harassment</h2><p>{message}</p></div>;
 }
 
 function App() {
   return (
     <Router>
-      <nav style={{ padding: '1rem', background: '#eee' }}>
-        <Link to="/">Home</Link> | <Link to="/rights">Rights</Link> | <Link to="/vault">Vault</Link> | <Link to="/letters">Letters</Link>
-      </nav>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/rights" element={<Rights />} />
-        <Route path="/vault" element={<Vault />} />
-        <Route path="/letters" element={<Letters />} />
-      </Routes>
+      <div style={{ padding: '1rem', background: '#eee' }}>
+        <nav>
+          <Link to="/">Home</Link> | <Link to="/rights">Rights</Link> | <Link to="/vault">Vault</Link> | <Link to="/letters">Letters</Link>
+        </nav>
+        <Verifier />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/rights" element={<Rights />} />
+          <Route path="/vault" element={<Vault />} />
+          <Route path="/letters" element={<Letters />} />
+          <Route path="/rights/lease" element={<Lease />} />
+          <Route path="/rights/eviction" element={<Eviction />} />
+          <Route path="/rights/repairs" element={<Repairs />} />
+          <Route path="/rights/retaliation" element={<Retaliation />} />
+        </Routes>
+      </div>
     </Router>
   );
 }

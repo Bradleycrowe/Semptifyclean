@@ -1,0 +1,32 @@
+{
+  "name": "Bradley",
+  "location": "Eagan, Minnesota",
+  "workspace": "Lexington Flats — bed-based setup, minimal equipment, no desk",
+  "project": {
+    "name": "Semptify",
+    "type": "Legal empowerment platform",
+    "frontend": "React",
+    "backend": "Express",
+    "scripts": ["PowerShell automation", "logging", "clipboard triggers"]
+  },
+  "preferences": {
+    "typing": "minimal",
+    "input": "slow",
+    "format": "copy-pasteable",
+    "tone": "empathetic, tactical",
+    "codeDelivery": "full files, macro-style guides",
+    "troubleshooting": "proactive",
+    "celebration": "movement metaphors",
+    "nextSteps": "proactive"
+  },
+  "goals": {
+    "shortTerm": [
+      "Vault Upload",
+      "Rights Navigator",
+      "Letter Generator",
+      "Backend routes",
+      "GitHub protections"
+    ],
+    "longTerm": "Scale Semptify into movement infrastructure for non-coders"
+  }
+}

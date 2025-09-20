@@ -32,6 +32,18 @@ app.get('/vault/files', (req, res) => {
 app.post('/letters', (req, res) => {
   res.json({ message: 'Letter of type ' + req.body.type + ' generated' });
 });
+app.get('/rights/lease', (req, res) => {
+  res.json({ message: 'Lease & Rent info coming soon' });
+});
+app.get('/rights/eviction', (req, res) => {
+  res.json({ message: 'Eviction & Entry info coming soon' });
+});
+app.get('/rights/repairs', (req, res) => {
+  res.json({ message: 'Repairs & Conditions info coming soon' });
+});
+app.get('/rights/retaliation', (req, res) => {
+  res.json({ message: 'Retaliation & Harassment info coming soon' });
+});
 app.listen(3001, () => {
   console.log('Server running on port 3001');
 });
@@ -62,41 +74,19 @@ function Home() {
       .then(data => setMessage(data.welcome))
       .catch(() => setMessage('Failed to connect to backend'));
   }, []);
-  return (
-    <div style={{ padding: '2rem' }}>
-      <h2>Home</h2>
-      <p>{message}</p>
-    </div>
-  );
+  return <div style={{ padding: '2rem' }}><h2>Home</h2><p>{message}</p></div>;
 }
 
 function Rights() {
-  const [message, setMessage] = useState('');
-  const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    fetch('/rights')
-      .then(res => res.json())
-      .then(data => {
-        setMessage(data.message);
-        setLoading(false);
-      })
-      .catch(() => {
-        setMessage('Failed to connect to backend');
-        setLoading(false);
-      });
-  }, []);
   return (
     <div style={{ padding: '2rem' }}>
       <h2>Rights Navigator</h2>
-      {loading ? <p>Loading...</p> : <p>{message}</p>}
-      <div style={{ marginTop: '2rem' }}>
-        <ul>
-          <li>🏠 Lease & Rent</li>
-          <li>🚪 Eviction & Entry</li>
-          <li>🛠️ Repairs & Conditions</li>
-          <li>📞 Retaliation & Harassment</li>
-        </ul>
-      </div>
+      <ul>
+        <li><Link to="/rights/lease">🏠 Lease & Rent</Link></li>
+        <li><Link to="/rights/eviction">🚪 Eviction & Entry</Link></li>
+        <li><Link to="/rights/repairs">🛠️ Repairs & Conditions</Link></li>
+        <li><Link to="/rights/retaliation">📞 Retaliation & Harassment</Link></li>
+      </ul>
     </div>
   );
 }
@@ -109,12 +99,7 @@ function Vault() {
       .then(data => setFiles(data.files || []))
       .catch(() => setFiles([]));
   }, []);
-  return (
-    <div style={{ padding: '2rem' }}>
-      <h2>Vault</h2>
-      <p>Files: {files.length === 0 ? 'None' : files.join(', ')}</p>
-    </div>
-  );
+  return <div style={{ padding: '2rem' }}><h2>Vault</h2><p>Files: {files.length === 0 ? 'None' : files.join(', ')}</p></div>;
 }
 
 function Letters() {
@@ -129,13 +114,47 @@ function Letters() {
       .then(data => setResponse(data.message))
       .catch(() => setResponse('Failed to send letter'));
   };
-  return (
-    <div style={{ padding: '2rem' }}>
-      <h2>Letters</h2>
-      <button onClick={sendLetter}>Generate Letter</button>
-      <p>{response}</p>
-    </div>
-  );
+  return <div style={{ padding: '2rem' }}><h2>Letters</h2><button onClick={sendLetter}>Generate Letter</button><p>{response}</p></div>;
+}
+
+function Lease() {
+  const [message, setMessage] = useState('');
+  useEffect(() => {
+    fetch('/rights/lease')
+      .then(res => res.json())
+      .then(data => setMessage(data.message));
+  }, []);
+  return <div style={{ padding: '2rem' }}><h2>Lease & Rent</h2><p>{message}</p></div>;
+}
+
+function Eviction() {
+  const [message, setMessage] = useState('');
+  useEffect(() => {
+    fetch('/rights/eviction')
+      .then(res => res.json())
+      .then(data => setMessage(data.message));
+  }, []);
+  return <div style={{ padding: '2rem' }}><h2>Eviction & Entry</h2><p>{message}</p></div>;
+}
+
+function Repairs() {
+  const [message, setMessage] = useState('');
+  useEffect(() => {
+    fetch('/rights/repairs')
+      .then(res => res.json())
+      .then(data => setMessage(data.message));
+  }, []);
+  return <div style={{ padding: '2rem' }}><h2>Repairs & Conditions</h2><p>{message}</p></div>;
+}
+
+function Retaliation() {
+  const [message, setMessage] = useState('');
+  useEffect(() => {
+    fetch('/rights/retaliation')
+      .then(res => res.json())
+      .then(data => setMessage(data.message));
+  }, []);
+  return <div style={{ padding: '2rem' }}><h2>Retaliation & Harassment</h2><p>{message}</p></div>;
 }
 
 function App() {
@@ -149,6 +168,10 @@ function App() {
         <Route path="/rights" element={<Rights />} />
         <Route path="/vault" element={<Vault />} />
         <Route path="/letters" element={<Letters />} />
+        <Route path="/rights/lease" element={<Lease />} />
+        <Route path="/rights/eviction" element={<Eviction />} />
+        <Route path="/rights/repairs" element={<Repairs />} />
+        <Route path="/rights/retaliation" element={<Retaliation />} />
       </Routes>
     </Router>
   );
@@ -159,4 +182,3 @@ export default App;
 
 # Launch frontend
 Start-Process powershell -ArgumentList "npm start" -WorkingDirectory "$base\client"
-
