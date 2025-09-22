@@ -121,3 +121,4 @@ This system automates collaboration between Copilots using background sync, Vaul
 ./runAll.sh              # Manual one-click sync
 ./startBackgroundChain.sh &  # Start automation loop
 ./stopChain.sh           # Stop automation loop
+```
