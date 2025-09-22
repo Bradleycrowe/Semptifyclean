@@ -12,36 +12,46 @@ Overview
 Run & debug (Windows PowerShell)
 - Backend (simple):
   ```powershell
-  node server/index.js
-  ```
-- Backend with timestamped logs (recommended when changing server behavior):
-  ```powershell
-  .\runServerWithLog.ps1
-  # or from server/: .\server\runServerWithLog.ps1
-  ```
-- Frontend (CRA):
-  ```powershell
-  cd client
-  npm install   # first-time only
-  npm start
-  ```
+  <!--
+  Semptify — concise Copilot instructions
+  Purpose: give an AI coding agent the minimum, accurate facts to be productive in this repo.
+  Keep this short (20–50 lines); update when file layout or run commands change.
+  -->
 
-Project-specific patterns
-- UI: Minimal, file-per-component screens in `client/src/screens/`. Components use inline style objects (see `App.js`, `HomeScreen.js`).
-- Backend: Keep route handlers under `server/routes/`, logic in `server/controllers/`, and data shapes in `server/models/` when you add features — current code keeps everything in `server/index.js`.
-- Logging: Use provided PS scripts to capture stdout/stderr into `server_log_YYYY-MM-DD_HH-mm-ss.txt` for reproducible debugging.
+  # Quick facts
+  - Frontend: React (Create React App) in `client/`. App entry: `client/src/index.js`. Main UI lives in `client/src/App.js`.
+  - Backend: Node + Express in `server/`. Actual entry: `server/server.js` (not `index.js`).
 
-Integration and dependencies
-- No external services are configured yet (comments mention planned Firebase). If you add integrations, create `server/config/` and document required env vars at repo root.
-- Key dependencies: backend -> `express`, `cors`; frontend -> `react`, `react-dom`, `react-scripts` (see each `package.json`).
+  # Run / debug (Windows PowerShell)
+  - Start backend (simple):
+    - node server/server.js
+  - Start backend and capture logs (recommended):
+    - .\runServerWithLog.ps1  # writes timestamped server_log_YYYY-MM-DD_HH-mm-ss.txt
+  - Frontend (first-time):
+    - cd client
+    - npm install
+    - npm start
+    - client `package.json` sets a proxy to `http://localhost:3001` so requests to `/verify`, `/vault/*`, etc. go to the server.
 
-Where to change things (examples)
-- Add an API route: create `server/routes/myRoute.js` and a controller `server/controllers/myRouteController.js`, then require/mount it in `server/index.js`.
-- Add UI screen: add `client/src/screens/NewScreen.js` and import it in `client/src/App.js`.
+  # Project-specific conventions
+  - API routes live in `server/`; small app currently implements routes in `server/server.js` (verify, /home, /rights/*, /letters, /vault/*).
+  - File uploads use `multer` and are stored in `server/uploads/` with timestamped filenames (see `server/server.js`).
+  - UI is screen-based; add new screens under `client/src/screens/` and wire them into `client/src/App.js` routes.
+  - Logging: use the provided PowerShell scripts in the repo root or `scripts/` to capture reproducible logs.
 
-PR checklist (short)
-- Describe the change and reason.
-- List manual steps to validate (commands above). Attach a `server_log_*.txt` if backend changed.
-- If new packages added, update lockfiles and note install commands.
+  # Where to touch safely (low-risk change ideas)
+  - Add a new API route: create `server/routes/<name>.js`, export a router, and mount it in `server/server.js`.
+  - Add a new screen: `client/src/screens/NewScreen.js` and add a <Route> in `client/src/App.js`.
+  - Add tests or types cautiously; the repo has no test runner configured beyond CRA client tests.
 
-If you want this expanded (example route+controller patch, unit tests, or CI), tell me which part to add and I will produce it.
+  # Integration notes & gotchas
+  - Server entry in `package.json` incorrectly points to `index.js`; the real file is `server.js` — prefer calling `node server/server.js`.
+  - The frontend proxy in `client/package.json` expects the backend on port 3001 (see `server/server.js`).
+  - No environment variable configuration is present. If adding secrets or configs, add `server/config/` and document env vars at repo root.
+
+  # PR checklist (specific)
+  - Explain why change is needed and which files changed.
+  - List exact manual validation steps (start server with log, start client, hit `/verify`, exercise affected UI screens).
+  - Include the `server_log_*.txt` file when backend behavior is modified.
+
+  If anything in these instructions is unclear or you want more detail (example route+controller patch, CI, or tests), tell me which area to expand.
