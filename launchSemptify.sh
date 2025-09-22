@@ -6,6 +6,7 @@ echo "🚧 Launching Semptify system..."
 mkdir -p upload-flow retrieval-flow macros logs docs
 touch logs/status.txt logs/conflicts.txt logs/upload.log
 
+# runCopilotSync.sh
 cat << 'EOF' > runCopilotSync.sh
 #!/bin/bash
 LOG_FILE="logs/status.txt"
@@ -37,6 +38,7 @@ rm temp_upload.txt temp_retrieval.txt temp_conflicts.txt
 EOF
 chmod +x runCopilotSync.sh
 
+# runVaultUpload.sh
 cat << 'EOF' > macros/runVaultUpload.sh
 #!/bin/bash
 echo "📦 Uploading Vault files..."
@@ -52,6 +54,7 @@ echo "$DATE ✅ Vault upload complete." >> logs/upload.log
 EOF
 chmod +x macros/runVaultUpload.sh
 
+# runAll.sh
 cat << 'EOF' > runAll.sh
 #!/bin/bash
 echo "🔄 Syncing Copilots..."
@@ -69,6 +72,7 @@ echo "✅ All done."
 EOF
 chmod +x runAll.sh
 
+# startBackgroundChain.sh
 cat << 'EOF' > startBackgroundChain.sh
 #!/bin/bash
 echo "👀 Watching for changes..."
@@ -91,6 +95,7 @@ done
 EOF
 chmod +x startBackgroundChain.sh
 
+# stopChain.sh
 cat << 'EOF' > stopChain.sh
 #!/bin/bash
 echo "🛑 Stopping background chain..."
@@ -98,6 +103,7 @@ pkill -f startBackgroundChain.sh
 EOF
 chmod +x stopChain.sh
 
+# README.md
 cat << 'EOF' > docs/README.md
 # Semptify Automation System
 
@@ -118,7 +124,6 @@ This system automates collaboration between Copilots using background sync, Vaul
 
 ## Usage
 ```bash
-./runAll.sh              # Manual one-click sync
+./runAll.sh                  # Manual one-click sync
 ./startBackgroundChain.sh &  # Start automation loop
-./stopChain.sh           # Stop automation loop
-```
+./stopChain.sh               # Stop automation loop
